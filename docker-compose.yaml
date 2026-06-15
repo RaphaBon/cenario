@@ -1,0 +1,79 @@
+services:
+  php:
+    build: .
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres_db
+      - mysql_db
+    volumes:
+      - ./app:/var/www/html
+    container_name: app
+    restart: always
+    networks:
+      - delivery
+    
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    ports:
+    - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - delivery
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: senha_da_nasa
+      POSTGRES_DB: relatorios
+    
+  mysql:
+    image: mysql:5.7
+    ports:
+     - "3306:3306"
+    container_name: mysql_db
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - delivery
+    environment:
+      MYSQL_ROOT_PASSWORD: senha_da_nasa
+      MYSQL_DATABASE: pedidos
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - delivery
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: senha_da_nasa
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    networks:
+      - delivery
+    environment:
+      PMA_HOST: mysql_db
+      PMA_USER: root
+      PMA_PASSWORD: senha_da_nasa
+    
+networks:
+  delivery:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mysql_data:
+  pgadmin_data:
