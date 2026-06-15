@@ -4,8 +4,8 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - postgres_db
-      - mysql_db
+      - postgres
+      - mysql
     volumes:
       - ./app:/var/www/html
     container_name: app
